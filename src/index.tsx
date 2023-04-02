@@ -16,34 +16,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import { webpack, components, common, types, util } from "replugged";
-import moment from "moment";
-
-// @ts-expect-error local css
-import overlayStyle from "./css/deleteStyleOverlay.css";
-// @ts-expect-error local css
-import textStyle from "./css/deleteStyleText.css";
-
+import { common, components, types, webpack } from "replugged";
 import { MLSettings, initSettings } from "./utils";
 import { stylesType } from "./messageLogger";
+import moment from "moment";
 
 const { ErrorBoundary } = components;
 const { users } = common;
+
+//@ts-expect-error local file
+import("./css/messageLogger.css");
+//@ts-expect-error local file
+import("./css/deleteStyleOverlay.css");
+//@ts-expect-error local file
+import("./css/deleteStyleText.css");
 
 const styles: types.ModuleExports & stylesType = await webpack.waitForModule(
   webpack.filters.byProps("edited", "communicationDisabled", "isSystemMessage"),
 );
 
 //const moment = webpack.waitForModule(webpack.filters.byProps("parseTwoDigitYear"));
-
-function loadDeleteStyle() {
-  util.loadStyleSheet("./css/messageLogger.css");
-  if (MLSettings.get("useOverlay")) {
-    util.loadStyleSheet(overlayStyle);
-  } else {
-    util.loadStyleSheet(textStyle);
-  }
-}
 
 function renderEdit(edit: { timestamp: any; content: string }) {
   return (
@@ -118,7 +110,7 @@ function handleDelete(
 
 export async function start(): Promise<void> {
   const settings = await initSettings();
-  loadDeleteStyle();
+  // @ts-expect-error adding to window
   window.rml = {
     handleDelete,
     makeEdit,
