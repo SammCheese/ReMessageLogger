@@ -1,7 +1,7 @@
 {
-  "name": "plugin-template",
+  "name": "replugged-messagelogger",
   "version": "1.0.0",
-  "description": "A plugin template",
+  "description": "A Port of Vencords Message Logger by Ven and Rushii",
   "engines": {
     "node": ">=18.0.0",
     "pnpm": ">=8.0.0"
@@ -20,7 +20,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "GPLv3",
   "devDependencies": {
     "@types/node": "^18.15.11",
     "@typescript-eslint/eslint-plugin": "^5.57.0",
@@ -32,5 +32,9 @@
     "prettier": "^2.8.7",
     "replugged": "^4.2.3",
     "typescript": "^5.0.3"
+  },
+  "dependencies": {
+    "@types/react": "^18.0.31",
+    "moment": "^2.29.4"
   }
 }

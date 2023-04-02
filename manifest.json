@@ -1,18 +1,20 @@
 {
-  "id": "dev.replugged.PluginTemplate",
-  "name": "Plugin Template",
-  "description": "A plugin template",
+  "id": "net.sammcheese.messageLogger",
+  "name": "Message Logger",
+  "description": "A Port of Vencords Message Logger by Ven and Rushii",
   "author": {
-    "name": "replugged",
-    "discordID": "1000992611840049192",
-    "github": "replugged-org"
+    "name": "Samm-Cheese#9500",
+    "discordID": "372148345894076416",
+    "github": "SammCheese"
   },
   "version": "1.0.0",
   "updater": {
     "type": "github",
-    "id": "replugged-org/plugin-template"
+    "id": "SammCheese/RepluggedMessageLogger"
   },
-  "license": "MIT",
+  "license": "GPLv3",
   "type": "replugged-plugin",
-  "renderer": "src/index.ts"
+  "renderer": "src/index.tsx",
+  "plaintextPatches": "src/plaintextPatches.ts",
+  "reloadRequired": true
 }

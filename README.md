@@ -1,3 +1,10 @@
-# Replugged plugin template
+# Replugged Message Logger
 
-See the [plugin development guide](https://guide.replugged.dev/docs/plugins/getting-started) for more information on using this template.
+A Port of [Vencords](https://github.com/Vendicated/Vencord/) Message Logger made by Ven and Rushii
+
+Some features dont exist in this version.
+
+## Credits
+
+ALL CREDITS GO TO [VEN](https://github.com/Vendicated) AND
+[RUSHII](https://github.com/rushiiMachine)
