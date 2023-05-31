@@ -26,7 +26,8 @@ const patches: types.PlaintextPatch[] = [
     replacements: [
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE event
-        match: /MESSAGE_DELETE:function\((\w)\){var [\s\S]*?((?:\w{1,2}\.){2})getOrCreate[\s\S]*?},/,
+        match:
+          /MESSAGE_DELETE:function\((\w)\){var [\s\S]*?((?:\w{1,2}\.){2})getOrCreate[\s\S]*?},/,
         replace:
           "MESSAGE_DELETE:function($1){" +
           "   var cache = $2getOrCreate($1.channelId);" +
@@ -36,7 +37,8 @@ const patches: types.PlaintextPatch[] = [
       },
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE_BULK event
-        match: /MESSAGE_DELETE_BULK:function\((\w)\){var [\s\S]*?((?:\w{1,2}\.){2})getOrCreate[\s\S]*?},/,
+        match:
+          /MESSAGE_DELETE_BULK:function\((\w)\){var [\s\S]*?((?:\w{1,2}\.){2})getOrCreate[\s\S]*?},/,
         replace:
           "MESSAGE_DELETE_BULK:function($1){" +
           "   var cache = $2getOrCreate($1.channelId);" +
