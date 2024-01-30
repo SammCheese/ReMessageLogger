@@ -64,7 +64,7 @@ const patches: types.PlaintextPatch[] = [
   {
     // Message domain model
     // Module 451
-    find: /isFirstMessageInForumPost\(\w{1,2}\){/,
+    find: "isSystemDM(){",
     replacements: [
       {
         match: /(\w*?)\.customRenderedContent=(\w*?)\.customRenderedContent,/,
