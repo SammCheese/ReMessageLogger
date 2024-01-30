@@ -27,23 +27,23 @@ const patches: types.PlaintextPatch[] = [
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE event
         match:
-          /MESSAGE_DELETE:function\((\w)\){var [\s\S]*?((?:\w{1,2}\.){2})getOrCreate[\s\S]*?},/,
+          /MESSAGE_DELETE:function\((\w)\){let[\s\S]*?(\w{1,2}\.default)\.getOrCreate[\s\S]*?},/,
         replace:
           "MESSAGE_DELETE:function($1){" +
-          "   var cache = $2getOrCreate($1.channelId);" +
+          "   var cache = $2.getOrCreate($1.channelId);" +
           "   cache = window.rml.handleDelete(cache, $1, false);" +
-          "   $2commit(cache);" +
+          "   $2.commit(cache);" +
           "},",
       },
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE_BULK event
         match:
-          /MESSAGE_DELETE_BULK:function\((\w)\){\n*var [\s\S]*?((?:\w{1,2}\.){2})getOrCreate[\s\S]*?},/,
+          /MESSAGE_DELETE_BULK:function\((\w)\){let[\s\S]*?(\w{1,2}\.default)\.getOrCreate[\s\S]*?},/,
         replace:
           "MESSAGE_DELETE_BULK:function($1){" +
-          "   var cache = $2getOrCreate($1.channelId);" +
+          "   var cache = $2.getOrCreate($1.channelId);" +
           "   cache = window.rml.handleDelete(cache, $1, true);" +
-          "   $2commit(cache);" +
+          "   $2.commit(cache);" +
           "},",
       },
       {
@@ -64,14 +64,14 @@ const patches: types.PlaintextPatch[] = [
   {
     // Message domain model
     // Module 451
-    find: "isFirstMessageInForumPost=function",
+    find: /isFirstMessageInForumPost\(\w{1,2}\){/,
     replacements: [
       {
-        match: /(\w)\.customRenderedContent=(\w)\.customRenderedContent;/,
+        match: /(\w*?)\.customRenderedContent=(\w*?)\.customRenderedContent,/,
         replace:
-          "$1.customRenderedContent = $2.customRenderedContent;" +
-          "$1.deleted = $2.deleted || false;" +
-          "$1.editHistory = $2.editHistory || [];",
+          "$1.customRenderedContent = $2.customRenderedContent," +
+          "$1.deleted = $2.deleted || false," +
+          "$1.editHistory = $2.editHistory || [],",
       },
     ],
   },
@@ -126,6 +126,7 @@ const patches: types.PlaintextPatch[] = [
     ],
   },
   {
+    // TODO: I have no clue where this is.
     // Attachment renderer
     // Module 96063
     find: '["className","attachment","inlineMedia"',
@@ -162,7 +163,7 @@ const patches: types.PlaintextPatch[] = [
         // Render editHistory in the deepest div for message content
         match: /(\)\("div",\{id:.+?children:\[)/,
         replace:
-          "$1 (arguments[0].message.editHistory.length > 0 ? arguments[0].message.editHistory.map(edit => window.rml.renderEdit(edit)) : null), ",
+          "$1 (arguments[0]?.message?.editHistory?.length > 0 ? arguments[0].message.editHistory.map(edit => window.rml.renderEdit(edit)) : null), ",
       },
     ],
   },
