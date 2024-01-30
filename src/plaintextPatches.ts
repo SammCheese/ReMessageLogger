@@ -126,18 +126,17 @@ const patches: types.PlaintextPatch[] = [
     ],
   },
   {
-    // TODO: I have no clue where this is.
     // Attachment renderer
     // Module 96063
-    find: '["className","attachment","inlineMedia"',
+    find: '.downloadHoverButtonIcon',
     replacements: [
       {
-        match: /((\w)\.className,\w=\2\.attachment),/,
-        replace: "$1,deleted=$2.attachment?.deleted,",
+        match: /className:\w,attachment:\w,/,
+        replace: (prefix) => `${prefix}attachment:{deleted},`,
       },
       {
-        match: /\["className","attachment","inlineMedia".+?className:/,
-        replace: "$& (deleted ? 'messagelogger-deleted-attachment ' : '') +",
+        match: /,\[.\.hiddenSpoiler\]/,
+        replace: (suffix) => `,"messagelogger-deleted-attachment":deleted${suffix}`,
       },
     ],
   },
