@@ -27,10 +27,20 @@ export let MLSettings: settings.SettingsManager<
   never
 >;
 
-export async function initSettings(): Promise<void> {
+export async function initSettings(): Promise<
+  settings.SettingsManager<
+    {
+      useOverlay: boolean;
+      ignoreBots: boolean;
+      ignoreSelf: boolean;
+    },
+    never
+  >
+> {
   MLSettings = await settings.init("messagelogger", {
     useOverlay: false,
     ignoreBots: false,
     ignoreSelf: false,
   });
+  return MLSettings;
 }
