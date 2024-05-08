@@ -22,7 +22,7 @@ const patches: types.PlaintextPatch[] = [
   {
     // MessageStore
     // Module 171447
-    find: 'displayName="MessageStore"',
+    find: '="MessageStore"',
     replacements: [
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE event
@@ -52,7 +52,7 @@ const patches: types.PlaintextPatch[] = [
         replace:
           "$1" +
           ".update($3,m =>" +
-          "   (($2.message.flags & 64) === 64 || (window.rml.ignoreBots && $2.message.author?.bot) || (window.rml.ignoreSelf && $2.message.author?.id === replugged.common.users.getCurrentUser().id)) ? m :" +
+          "   (($2.message.flags & 64) === 64 || (window.rml.settings.get('ignoreBots', false) && $2.message.author?.bot) || (window.rml.settings.get('ignoreSelf', false) && $2.message.author?.id === replugged.common.users.getCurrentUser().id)) ? m :" +
           "   $2.message.content !== m.editHistory?.[0]?.content && $2.message.content !== m.content ?" +
           "       m.set('editHistory',[...(m.editHistory || []), window.rml.makeEdit($2.message, m)]) :" +
           "       m" +
@@ -106,11 +106,12 @@ const patches: types.PlaintextPatch[] = [
         match: /attachments:(\w{1,2})\((\w)\)/,
         replace:
           "attachments: $1((() => {" +
-          "   let old = arguments[1]?.attachments;" +
+          " if (($2.flags & 64) === 64 || (window.rml.settings.get('ignoreBots', false) && $2.author?.bot) || (window.rml.settings.get('ignoreSelf', false) && $2.author?.id === replugged.common.users.getCurrentUser().id)) return $2; " +
+          "  let old = arguments[1]?.attachments;" +
           "   if (!old) return $2;" +
           "   let new_ = $2.attachments?.map(a => a.id) ?? [];" +
           "   let diff = old.filter(a => !new_.includes(a.id));" +
-          "   old.forEach(a => a.deleted = true);" +
+          "   diff.forEach(a => a.deleted = true);" +
           "   $2.attachments = [...diff, ...$2.attachments];" +
           "   return $2;" +
           "})())," +
@@ -119,24 +120,25 @@ const patches: types.PlaintextPatch[] = [
       },
       {
         // Preserve deleted attribute on attachments
-        match: /(\((\w)\){return null==\2\.attachments.+?)spoiler:/,
+        match: /(\((\w)\){return null==\2\.attachments.+?\.(\w+),)spoiler:/,
         // eslint-disable-next-line no-useless-concat
-        replace: "$1deleted: arguments[0]?.deleted," + "spoiler:",
+        replace: "$1deleted: arguments[0]?.deleted || $2.deleted," + "spoiler:",
       },
     ],
   },
   {
     // Attachment renderer
     // Module 96063
-    find: '.downloadHoverButtonIcon',
+    find: ".downloadHoverButtonIcon",
     replacements: [
       {
-        match: /className:\w,attachment:\w,/,
-        replace: (prefix) => `${prefix}attachment:{deleted},`,
+        match: /className:\w,item:\w,/,
+        replace: (prefix) => `${prefix}item,`,
       },
       {
         match: /,\[.\.hiddenSpoiler\]/,
-        replace: (suffix) => `,"messagelogger-deleted-attachment":deleted${suffix}`,
+        replace: (suffix) =>
+          `,"messagelogger-deleted-attachment":item?.originalItem?.deleted${suffix}`,
       },
     ],
   },
@@ -169,7 +171,7 @@ const patches: types.PlaintextPatch[] = [
   {
     // ReferencedMessageStore
     // Module 778667
-    find: 'displayName="ReferencedMessageStore"',
+    find: '"displayName","ReferencedMessageStore"',
     replacements: [
       {
         match: /MESSAGE_DELETE:function\((\w)\).+?},/,

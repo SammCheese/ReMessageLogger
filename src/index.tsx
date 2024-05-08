@@ -50,6 +50,7 @@ function renderEdit(edit: { timestamp: any; content: string }) {
 
 function makeEdit(newMessage: any, oldMessage: any): any {
   const timestamp = moment?.call(newMessage.edited_timestamp);
+
   return {
     timestamp,
     content: oldMessage.content,
@@ -63,7 +64,6 @@ function handleDelete(
 ) {
   try {
     if (cache == null || (!isBulk && !cache.has(data.id))) return cache;
-
     const { ignoreSelf, ignoreBots } = MLSettings.all();
     const myId = users.getCurrentUser().id;
 
