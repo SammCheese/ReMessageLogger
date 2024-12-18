@@ -22,33 +22,33 @@ const patches: types.PlaintextPatch[] = [
   {
     // MessageStore
     // Module 171447
-    find: '="MessageStore"',
+    find: '"MessageStore"',
     replacements: [
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE event
         match:
-          /MESSAGE_DELETE:function\((\w)\){let[\s\S]*?(\w{1,2}\.default)\.getOrCreate[\s\S]*?},/,
+          /function (\w+)\((\w)\){.{10,40}(\w+\.\w+)\.getOrCreate.{30,50}\.revealedMessageId===.+?\.delete\(\w+\)}/,
         replace:
-          "MESSAGE_DELETE:function($1){" +
-          "   var cache = $2.getOrCreate($1.channelId);" +
-          "   cache = window.rml.handleDelete(cache, $1, false);" +
-          "   $2.commit(cache);" +
-          "},",
+          "function $1($2){" +
+          "   var cache = $3.getOrCreate($2.channelId);" +
+          "   cache = window.rml.handleDelete(cache, $2, false);" +
+          "   $3.commit(cache);" +
+          "}",
       },
       {
         // Add deleted=true to all target messages in the MESSAGE_DELETE_BULK event
         match:
-          /MESSAGE_DELETE_BULK:function\((\w)\){let[\s\S]*?(\w{1,2}\.default)\.getOrCreate[\s\S]*?},/,
+          /function (\w+)\((\w)\){.{10,40}(\w+\.\w+)\.getOrCreate.{20,40}\.removeMany.+?\.delete\(e\)}\)}/,
         replace:
-          "MESSAGE_DELETE_BULK:function($1){" +
-          "   var cache = $2.getOrCreate($1.channelId);" +
-          "   cache = window.rml.handleDelete(cache, $1, true);" +
+          "function $1($2){" +
+          "   var cache = $3.getOrCreate($2.channelId);" +
+          "   cache = window.rml.handleDelete(cache, $2, true);" +
           "   $2.commit(cache);" +
-          "},",
+          "}",
       },
       {
         // Add current cached content + new edit time to cached message's editHistory
-        match: /(MESSAGE_UPDATE:function\((\w)\).+?)\.update\((\w)/,
+        match: /(function \w+\((\w)\){let \w+=\w+\.message\.id.{70,90})\.update\((\w)/,
         replace:
           "$1" +
           ".update($3,m =>" +
@@ -158,7 +158,7 @@ const patches: types.PlaintextPatch[] = [
   {
     // Message content renderer
     // Module 43016
-    find: 'Messages.MESSAGE_EDITED,")"',
+    find: ".editedTimestamp&&",
     replacements: [
       {
         // Render editHistory in the deepest div for message content
@@ -171,15 +171,15 @@ const patches: types.PlaintextPatch[] = [
   {
     // ReferencedMessageStore
     // Module 778667
-    find: '"displayName","ReferencedMessageStore"',
+    find: '"ReferencedMessageStore"',
     replacements: [
       {
-        match: /MESSAGE_DELETE:function\((\w)\).+?},/,
-        replace: "MESSAGE_DELETE:function($1){},",
+        match: /MESSAGE_DELETE:\w+,/,
+        replace: "MESSAGE_DELETE:function(){},",
       },
       {
-        match: /MESSAGE_DELETE_BULK:function\((\w)\).+?},/,
-        replace: "MESSAGE_DELETE_BULK:function($1){},",
+        match: /MESSAGE_DELETE_BULK:\w+,/,
+        replace: "MESSAGE_DELETE_BULK:function(){},",
       },
     ],
   },
