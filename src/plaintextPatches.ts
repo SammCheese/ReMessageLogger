@@ -43,7 +43,7 @@ const patches: types.PlaintextPatch[] = [
           "function $1($2){" +
           "   var cache = $3.getOrCreate($2.channelId);" +
           "   cache = window.rml.handleDelete(cache, $2, true);" +
-          "   $2.commit(cache);" +
+          "   $3.commit(cache);" +
           "}",
       },
       {
